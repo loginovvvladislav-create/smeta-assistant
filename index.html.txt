@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Смета.Ассистент</title>
+    <style>
+        /* Сброс стандартных отступов */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            display: grid; /* Используем Grid для двух колонок */
+            height: 100vh; /* Занимаем всю высоту экрана */
+        }
+
+        #roomCanvas {
+            background-color: #f0f0f0;
+            border: 2px solid #333;
+            display: block; /* Убирает небольшой отступ снизу у canvas */
+        }
+
+        .container {
+            display: contents; /* Позволяет дочерним элементам стать прямыми детьми body-grid */
+        }
+
+        .canvas-column {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: auto; /* Появится скролл, если контент не влезет */
+        }
+
+        .control-column {
+            background-color: #fafafa;
+            border-left: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto; /* Скролл только по высоте для панели управления */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #drawBtn { background-color: #007bff; color: white; }
+        #drawBtn:hover { background-color: #0056b3; }
+
+        .materials-list {
+            list-style-type: none;
+        }
+
+        .material-item {
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .material-item:hover {
+            background-color: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .material-item.selected {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+
+        #estimateResult {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #fffbe6;
+            border: 1px solid #ffe082;
+            border-radius: 4px;
+            min-height: 60px;
+            font-size: 1.1em;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+            .control-column {
+                border-left: none;
+                border-top: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Левая колонка: Холст -->
+    <div class="canvas-column">
+        <canvas id="roomCanvas" width="800" height="600"></canvas>
+    </div>
+
+    <!-- Правая колонка: Панель управления -->
+    <div class="control-column">
+        <h2>Управление сметой</h2>
+
+        <div class="form-group">
+            <label for="length">Длина комнаты (см):</label>
+            <input type="number" id="length" value="500" min="50" max="10000">
+        </div>
+
+        <div class="form-group">
+            <label for="width">Ширина комнаты (см):</label>
+            <input type="number" id="width" value="400" min="50" max="10000">
+        </div>
+
+        <button id="drawBtn">Нарисовать комнату</button>
+
+        <h2 style="margin-top: 30px;">Каталог материалов</h2>
+        <ul class="materials-list">
+            <li class="material-item" data-material="laminate" data-price="850">
+                Ламинат
+                <span style="color: #666; font-size: 0.9em;">850 ₽/м²</span>
+            </li>
+            <li class="material-item" data-material="wallpaper" data-price="600">
+                Обои
+                <span style="color: #666; font-size: 0.9em;">600 ₽/м²</span>
+            </li>
+            <li class="material-item" data-material="tile" data-price="1200">
+                Плитка
+                <span style="color: #666; font-size: 0.9em;">1200 ₽/м²</span>
+            </li>
+        </ul>
+
+        <div id="estimateResult">
+            Выберите материал и нажмите "Нарисовать комнату", чтобы рассчитать смету.
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('roomCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Поля ввода размеров
+    const lengthInput = document.getElementById('length');
+    const widthInput = document.getElementById('width');
+    const drawBtn = document.getElementById('drawBtn');
+    
+    // Элементы каталога и вывода
+    const materialItems = document.querySelectorAll('.material-item');
+    const estimateResult = document.getElementById('estimateResult');
+
+    let selectedMaterial = 'laminate'; // Материал по умолчанию
+
+    /* --- Управление каталогом материалов --- */
+    materialItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Снимаем выделение со всех
+            materialItems.forEach(i => i.classList.remove('selected'));
+            // Выделяем выбранный
+            this.classList.add('selected');
+            selectedMaterial = this.dataset.material;
+            
+            // Если комната уже нарисована, пересчитываем смету
+            if (ctx.rectDrawn) {
+                updateEstimate();
+            }
+        });
+    });
+
+    /* --- Отрисовка комнаты на холсте --- */
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Рисуем фон пола (светлое дерево)
+        const floorPatternData = createFloorPattern();
+        ctx.fillStyle = floorPatternData;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.rectDrawn = false;
+    }
+
+    function createFloorPattern() {
+        const patternCanvas = document.createElement('canvas');
+        patternCanvas.width = 40;
+        patternCanvas.height = 40;
+        const pCtx = patternCanvas.getContext('2d');
+        
+        // Простая текстура дерева
+        pCtx.fillStyle = '#EDEAE4';
+        pCtx.fillRect(0, 0, 40, 40);
+        pCtx.fillStyle = '#D9CAB3';
+        for(let x=0; x<40; x+=8){
+            for(let y=0; y<40; y+=40){
+                pCtx.fillRect(x, y, 4, 40);
+            }
+        }
+        
+        return ctx.createPattern(patternCanvas, 'repeat');
+    }
+
+    function drawRoom(lengthCm, widthCm) {
+        clearCanvas();
+
+        // Определяем масштаб, чтобы большая сторона комнаты занимала максимум 760px (оставив поля)
+        const scaleX = (canvas.width - 80) / lengthCm;
+        const scaleY = (canvas.height - 80) / widthCm;
+        const scale = Math.min(scaleX, scaleY, 1); // Не увеличиваем мелкие комнаты больше 1:1
+
+        const roomWidthPx = lengthCm * scale;
+        const roomHeightPx = widthCm * scale;
+
+        // Центрируем комнату
+        const offsetX = (canvas.width - roomWidthPx) / 2;
+        const offsetY = (canvas.height - roomHeightPx) / 2;
+
+        // Сохраняем данные о комнате для расчета площади
+        canvas.roomScale = scale;
+        canvas.actualLength = lengthCm;
+        canvas.actualWidth = widthCm;
+        ctx.rectDrawn = true;
+
+        // Рисуем стены (толстый серый контур)
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#A0A0A0';
+        ctx.strokeRect(offsetX, offsetY, roomWidthPx, roomHeightPx);
+
+        // Рисуем пол поверх стен
+        ctx.fillStyle = ctx.createPattern(createFloorPattern(), 'repeat');
+        ctx.fillRect(offsetX + 4, offsetY + 4, roomWidthPx - 8, roomHeightPx - 8);
+
+        // Подписываем размеры прямо на холсте
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${lengthCm} см`, canvas.width / 2, offsetY > 30 ? offsetY - 15 : canvas.height - 10);
+        ctx.save();
+        ctx.translate(20, canvas.height / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText(`${widthCm} см`, 0, 0);
+        ctx.restore();
+
+        updateEstimate();
+    }
+
+    /* --- Расчет сметы --- */
+    function updateEstimate() {
+        if (!ctx.rectDrawn) {
+            estimateResult.textContent = 'Задайте параметры и постройте план.';
+            return;
+        }
+
+        const areaM2 = ((canvas.actualLength / 100) * (canvas.actualWidth / 100)).toFixed(2);
+        const pricePerM2 = parseFloat(document.querySelector(`.material-item[data-material="${selectedMaterial}"]`).dataset.price);
+        const totalCost = (areaM2 * pricePerM2).toLocaleString('ru-RU');
+
+        const materialNames = {
+            laminate: 'Ламинат',
+            wallpaper: 'Обои',
+            tile: 'Плитка'
+        };
+
+        estimateResult.innerHTML = `
+            Площадь: ${areaM2} м²<br>
+            Материал: ${materialNames[selectedMaterial]}<br>
+            Итого к закупке: ${totalCost} ₽
+        `;
+    }
+
+    /* --- Обработчики событий --- */
+    drawBtn.addEventListener('click', () => {
+        const len = parseInt(lengthInput.value);
+        const wid = parseInt(widthInput.value);
+
+        if (len && wid && len > 0 && wid > 0) {
+            drawRoom(len, wid);
+        } else {
+            alert('Введите корректные значения длины и ширины.');
+        }
+    });
+
+    // Нажатие Enter в полях тоже запускает отрисовку
+    [lengthInput, widthInput].forEach(input => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                drawBtn.click();
+            }
+        });
+    });
+
+    // Первичная инициализация: выбираем первый материал и рисуем комнату по умолчанию
+    materialItems[0].classList.add('selected');
+    drawRoom(parseInt(lengthInput.value), parseInt(widthInput.value));
+</script>
+
+</body>
+</html>
