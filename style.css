@@ -1,225 +1,184 @@
-:root {
-    --bg-main: #f9fafb;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --border-color: #e5e7eb;
-    --accent-color: #2563eb; /* Синий */
-    --card-bg: #ffffff;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
+/* Общие настройки */
 * {
     box-sizing: border-box;
+}
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #fafafa; /* Светлый фон */
+    color: #24292e;
+    line-height: 1.5;
+    margin: 0;
+    padding: 2rem;
+}
+.bg-light { background-color: #fafafa; }
+.text-center { text-align: center; }
+.container {
+    max-width: 768px;
+    margin: auto;
+    padding: 0 1rem;
+}
+@media (max-width: 768px) {
+    .container { padding: 0 1rem; }
+}
+
+/* Логотип в Hero-блоке */
+.logo-container img {
+    width: 6rem; /* ~96px */
+    display: block;
+    margin: auto;
+}
+.hero-section {
+    margin-bottom: 3rem;
+}
+h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    line-height: 1.2;
+}
+.description {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-top: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+/* Кнопки в стиле из примера */
+.button {
+    display: inline-block;
+    padding: 0.8em 3em; /* Высота/ширина */
+    text-decoration: none;
+    color: #454647; /* Темно-серый текст */
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem / 0.5rem; /* Эффект "закрученных" углов */
+}
+.button::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    right: -10%;
+    bottom: -10%;
+    z-index: -1;
+    background-image: linear-gradient(135deg, transparent 30%, rgba(255,255,255,.1));
+} 
+.button.primary { 
+    background-color: #f9f8f6; /* Бежевый фон */
+}
+.button.secondary {
+    background-color: white;
+    box-shadow: inset 0 -0.1rem 0 rgba(0,0,0,0.1), 0 0.1rem 0.2rem rgba(0,0,0,0.05);
+}
+.button:hover,
+.button:focus-visible {
+    transform: translateY(-0.1rem); /* Поднимаются вверх при наведении */
+    filter: brightness(1.05);
+}
+
+/* Блок преимуществ (Features) */
+.section-title {
+    font-size: 1.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+.features-section {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Адаптивность */
+}
+.feature-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.1rem 0.2rem rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+}
+.feature-icon {
+    font-family: 'Material Icons';
+    font-size: 2.5rem;
+    color: #a3a3a3;
+    margin-right: 1rem;
+    display: inline-flex;
+    vertical-align: middle;
+}
+.feature-card h3 {
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+/* Отзывы пользователей (Testimonials) */
+.testimonials-section {
+    margin-top: 3rem;
+}
+.testimonial {
+    background-color: #fbfbfb;
+    padding: 1.5rem;
+    border-left: 0.3rem solid #eaeaea;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+.testimonial::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 1.5rem; height: 1.5rem;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22currentColor%22%3E%3Cpath d=%22M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-1 4.586L6.707 7.293l1.414-1.414L12 5.172l2.886-2.886 1.414 1.414L13 6.586v6.636c-3.757 0-6.94-2.564-8.485-6.182C3.32 7.63 5.65 6 8.5 6v-.414z%22/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+blockquote p { margin: 0; }
+blockquote footer { font-style: italic; }
+
+/* FAQ с раскрывающимися блоками */
+.faq-section details[open] > summary::-webkit-details-marker {
+    display: none; /* Убираем дефолтный маркер */
+}
+.faq-section summary {
+    cursor: pointer;
+    list-style-type: none;
+    padding: 1.2rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    outline: none;
+}
+.faq-section [open]>summary {
+    background-color: #f9f8f6;
+}
+.faq-section summary::-webkit-details-marker {
+    display: none;
+}
+.faq-section summary::after {
+    content: '\u2BC8'; /* Стрелка вниз */
+    float: right;
+    margin-left: 1rem;
+    transition: transform 0.2s;
+}
+.faq-section [open]>summary::after {
+    transform: rotate(180deg); /* Поворачиваем стрелку */
+}
+.faq-section details>div {
+    padding: 1.2rem;
+    background-color: #f9f8f6;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+/* Footer */
+footer ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin: 0;
     padding: 0;
 }
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-primary);
-    line-height: 1.5;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px;
+footer a {
+    color: inherit;
+    text-decoration: none;
 }
-
-.app-container {
-    width: 100%;
-    max-width: 1200px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-}
-
-/* Левая часть — Холст */
-.canvas-wrapper {
-    position: relative;
-    background: #f3f4f6;
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 600px;
-}
-
-#roomCanvas {
-    background: #fff;
-    border: 2px dashed var(--border-color);
-    cursor: crosshair;
-    box-shadow: var(--shadow-sm);
-}
-
-/* Инструменты поверх холста */
-.canvas-controls {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-}
-
-.tool-btn {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    background: white;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.tool-btn.active, .tool-btn:hover {
-    border-color: var(--accent-color);
-    background-color: var(--accent-color);
-    color: white;
-}
-
-/* Правая часть — Панель управления */
-.control-panel {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    overflow-y: auto;
-}
-
-h1 {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--text-primary);
-}
-
-.subtitle {
-    font-size: 14px;
-    color: var(--text-secondary);
-}
-
-.input-group {
-    display: flex;
-    gap: 12px;
-}
-
-.input-group input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-button.primary {
-    width: 100%;
-    padding: 14px;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button.primary:hover {
-    background: #1d4ed8;
-}
-
-/* Каталог материалов */
-.material-catalog h3 {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 12px;
-    color: var(--text-primary);
-}
-
-.material-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-
-.material-item.selected {
-    border-color: var(--accent-color);
-    background-color: #eff6ff;
-}
-
-.material-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.material-name {
-    font-weight: 500;
-    font-size: 15px;
-}
-
-.material-price {
-    font-size: 13px;
-    color: var(--text-secondary);
-}
-
-.btn-select-material {
-    padding: 6px 12px;
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 13px;
-}
-
-/* Блок сметы */
-.smet-block {
-    margin-top: auto;
-    padding-top: 24px;
-    border-top: 2px solid var(--border-color);
-}
-
-.total-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.total-row.grand-total {
-    font-size: 18px;
-    color: var(--accent-color);
-    padding-top: 8px;
-    border-top: 1px solid var(--border-color);
-}
-
-/* Адаптивность для планшетов и телефонов */
-@media (max-width: 900px) {
-    .app-container {
-        grid-template-columns: 1fr;
-        max-width: 100%;
-    }
-    
-    .canvas-wrapper {
-        height: 400px;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    #roomCanvas {
-        width: 100% !important;
-        height: 100% !important;
-    }
+footer small {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #6b7280;
 }
