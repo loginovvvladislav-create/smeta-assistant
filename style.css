@@ -10,7 +10,9 @@ body {
     margin: 0;
     padding: 2rem;
 }
-.bg-light { background-color: #fafafa; }
+.bg-light { 
+    background-color: #fafafa; 
+}
 .text-center { text-align: center; }
 .container {
     max-width: 768px;
@@ -21,8 +23,8 @@ body {
     .container { padding: 0 1rem; }
 }
 
-/* Логотип в Hero-блоке */
-.logo-container img {
+/* Логотип */
+.logo {
     width: 6rem; /* ~96px */
     display: block;
     margin: auto;
