@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Смета Ассистент</title>
+    <!-- Подключаем стили -->
+    <link rel="stylesheet" href="style.css" />
+    
+    <!-- Иконки Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"/>
+  </head>
+  
+  <body class="bg-light">
+    <!-- Лого и Герой-блок -->
+    <div class="hero-section container">
+      <img src="logo.jng" alt="Логотип Сметы Ассистент" class="logo">
+      
+      <h1 class="text-center">Точно рассчитайте ремонт без Excel</h1>
+      <p class="description text-center">Нарисуйте план комнаты за минуту и получите смету по актуальным ценам.</p>
+
+      <a href="/calculator.html" class="button primary">Рассчитать смету</a>
+    </div>
+
+    <!-- Блок преимуществ (Features) -->
+    <section class="features-section container">
+        <h2 class="section-title">Почему выбирают нас?</h2>
+
+        <div class="feature-card">
+            <span class="material-icons feature-icon">home</span>
+            <h3>Простой чертеж</h3>
+            <p>Нарисуйте комнату любой формы мышкой или пальцем. Не нужен сложный софт.</p>
+        </div>
+
+        <div class="feature-card">
+            <span class="material-icons feature-icon">calculate</div>
+            <h3>Точные расчеты</h3>
+            <p>Учитываются окна, двери и высота потолков. Вы получаете точное количество упаковок материалов.</p>
+        </div>
+
+        <div class="feature-card">
+            <span class="material-icons feature-icon">shopping_cart</span>
+            <h3>Актуальные цены</h3>
+            <p>Цены на материалы из популярных магазинов России. Экономьте время на поиске скидок.</p>
+        </div>
+
+        <div class="feature-card">
+            <span class="material-icons feature-icon">timer</span>
+            <h3>Быстрый результат</h3>
+            <p>Получите смету за 5 минут вместо нескольких часов работы в таблицах.</p>
+        </div>
+    </section>
+
+    <!-- Отзывы пользователей (Testimonials) -->
+    <section class="testimonials-section container">
+        <h2 class="section-title">Что говорят наши пользователи</h2>
+
+        <blockquote class="testimonial">
+          <p>"Я дизайнер интерьеров и использую «Смету Ассистент» для быстрой оценки стоимости ремонта перед встречей с клиентом."</p>
+          <footer>- Анна Смирнова, г. Санкт-Петербург</footer>
+        </blockquote>
+
+        <blockquote class="testimonial">
+          <p>"Сервис помог мне сэкономить деньги при ремонте кухни. Точный расчет количества плитки позволил избежать переплаты."</p>
+          <footer>- Сергей Иванов, г. Москва</footer>
+        </blockquote>
+    </section>
+
+    <!-- Часто задаваемые вопросы (FAQ) -->
+    <section class="faq-section container">
+        <h2 class="section-title">Вопросы и ответы</h2>
+
+        <details open>
+            <summary>Как вы считаете цену материала?</summary>
+            <p>Мы используем средние рыночные цены на популярные строительные материалы, актуальные для вашего региона. В будущем мы планируем добавить возможность привязки к конкретным магазинам.</p>
+        </details>
+
+        <details>
+            <summary>Какие материалы доступны для расчета?</summary>
+            <p>В каталоге более 100 позиций: ламинат, плитка, обои, краска, натяжные потолки, черновые смеси и многое другое. Список постоянно расширяется.</p>
+        </details>
+
+        <details>
+            <summary>Безопасно ли вводить размеры моей квартиры?</summary>
+            <p>Да, абсолютно безопасно. Мы не храним ваши данные. Все расчёты происходят прямо в вашем браузере (*localStorage*). Ваши планы комнат остаются только у вас.</p>
+        </details>
+        
+        <details>
+            <summary>Можно ли сохранить проект?</summary>
+            <p>На данный момент проекты сохраняются локально в вашем браузере. В платной подписке будет доступна синхронизация проектов между устройствами.</p>
+        </details>
+    </section>
+
+    <!-- Подвал (Footer) -->
+    <footer class="container">
+        <nav>
+            <ul>
+                <li><a href="#">О проекте</a></li>
+                <li><a href="#">Контакты</a></li>
+                <li><a href="#">Политика конфиденциальности</a></li>
+            </ul>
+        </nav>
+        <small>&copy; Смета Ассистент | Все права защищены</small>
+    </footer>
+  </body>
+</html>
